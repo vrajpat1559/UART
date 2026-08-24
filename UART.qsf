@@ -39,14 +39,10 @@
 
 set_global_assignment -name FAMILY "Cyclone V"
 set_global_assignment -name DEVICE 5CGXFC7C7F23C8
-set_global_assignment -name TOP_LEVEL_ENTITY UART
+set_global_assignment -name TOP_LEVEL_ENTITY uart_tx
 set_global_assignment -name ORIGINAL_QUARTUS_VERSION 25.1STD.0
 set_global_assignment -name PROJECT_CREATION_TIME_DATE "00:30:55  AUGUST 21, 2026"
 set_global_assignment -name LAST_QUARTUS_VERSION "25.1std.0 Standard Edition"
-set_global_assignment -name SOURCE_FILE "../../../Downloads/UART Project-20260821T052842Z-1-001/UART Project/UART.quiproj.25616.rdr.flock"
-set_global_assignment -name SOURCE_FILE "../../../Downloads/UART Project-20260821T052842Z-1-001/UART Project/UART.qsf"
-set_global_assignment -name SOURCE_FILE "../../../Downloads/UART Project-20260821T052842Z-1-001/UART Project/UART.qpf"
-set_global_assignment -name SOURCE_FILE "../../../Downloads/UART Project-20260821T052842Z-1-001/UART Project/UART.db_info"
 set_global_assignment -name PROJECT_OUTPUT_DIRECTORY output_files
 set_global_assignment -name SYSTEMVERILOG_FILE UART_TX.sv
 set_global_assignment -name ERROR_CHECK_FREQUENCY_DIVISOR 256
