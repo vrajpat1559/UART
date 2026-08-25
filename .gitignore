@@ -1,0 +1,49 @@
+# ============================================================
+# Quartus Prime — generated / tool output (do NOT version)
+# ============================================================
+db/
+incremental_db/
+output_files/
+.qsys_edit/
+qdb/
+hc_output/
+hps_isw_handoff/
+greybox_tmp/
+tmp-clearbox/
+
+# Quartus reports, logs, and bookkeeping
+*.rpt
+*.summary
+*.smsg
+*.done
+*.qws
+*.qarlog
+*.jdi
+*.pin
+*.qdf
+*.orig
+*.bak
+
+# Programming / bitstream outputs (regenerated on compile)
+*.sof
+*.pof
+*.rbf
+*.jam
+*.jbc
+*.svf
+
+# Lock files (the OneDrive/read-only culprit)
+*.flock
+*.lock
+
+# ============================================================
+# OS / editor cruft
+# ============================================================
+Thumbs.db
+desktop.ini
+.DS_Store
+.vscode/
+
+# ============================================================
+# Keep (tracked): *.qpf *.qsf *.sdc *.v *.sv *.vhd *.qip *.mif
+# ============================================================
