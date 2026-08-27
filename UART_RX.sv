@@ -8,9 +8,90 @@ module uart_rx #(parameter int CLK_FREQ_HZ = 50_000_000, parameter int BAUD_RATE
 	output logic rx_valid,
 	output logic [7:0] rx_data
 );
-
+	//derived constants;
 	localparam int CYCLES_PER_BIT = CLK_FREQ_HZ / BAUD_RATE;
-
+	localparam int OVERSAMPLE = 16;
+	localparam int OS_DIVISOR = CYCLES_PER_BIT/OVERSAMPLE;
+	//state enum
 	typedef enum logic [1:0] {IDLE, START_BIT, DATA_BITS, STOP_BIT} state_t;
 	
 	state_t state, state_next;
+
+	logic rx_FF_1;
+	logic rx_FF_2;
+	logic [OS_DIVISOR -1:0] tick_counter;
+	logic [3:0] os_count; 
+	logic [2:0] bit_idx;
+	logic [7:0] data_register;
+	logic os_tick;
+	//synchronizer
+	always_ff @(posedge clk) begin
+	if(!rst_n) 
+		rx_FF_1 <= 1'b1;
+		rx_FF_2 <= 1'b1;
+	end else begin
+		rx_FF_1	<= rx;
+		rx_FF_2  <= rx_FF_1;
+	end	
+end
+	//oversampler
+	always_ff @(posedge clk) begin
+	if(!rst_n)
+		tick_counter <= 0;
+	else if(tick_counter == OS_DIVSIOR -1)
+		tick_counter <= 0;
+	else
+		tick_counter <= tick_counter +1;
+		
+	assign os_tick = (tick_counter == OS_DIVSIOR -1);
+
+	always_ff @(posedge clk) begin
+	if(!rst_n) 
+		os_count <= 0;
+	else if(state == IDLE)
+		os_count <= 0;
+	else if (state != state_next)
+		os_count <=0;
+	else if(os_tick)
+		os_count <= os_count + 1;
+	end
+	//
+	
+	//edge detection
+	assign rx_falling_edge = (rx_FF_2 == 1'b1 && rx_FF_1 == 1'b0);
+	//
+	
+	//FSM 
+	always_comb begin
+	state_next = state;
+	case(state)
+		IDLE: if (rx_falling_edge) state_next = START_BIT;
+		START_BIT: if (os_count == OVERSAMPLE/2 && os_tick) state_next = DATA_BITS;
+		DATA_BITS: if(bit_idx == 7 && os_count == 15 && os_tick) state_next = STOP_BIT;
+		STOP_BIT: if (os_count == OVERSAMPLE -1 && os_tick) state_next = IDLE;
+	endcase
+end
+
+	//state register
+	always_ff @(posedge clk) begin
+		if(!rst_n) 
+			state <= IDLE;
+		else
+			state <= state_next;
+		end
+		
+		
+	//bit index counter
+	always_ff @(posedge clk) begin
+	if(!rst_n)
+		bit_idx <= 0;
+	else if (state != DATA_BITS)
+		bit_idx <= 0;
+	else if (os_tick && os_count == 15)
+		bit_idx <= bit_idx + 1;
+	end
+	
+	//data capture
+	always_ff @(posedge clk) begin
+	if(!rst_n) 
+		
