@@ -24,12 +24,15 @@ module uart_rx #(parameter int CLK_FREQ_HZ = 50_000_000, parameter int BAUD_RATE
 	logic [2:0] bit_idx;
 	logic [7:0] data_register;
 	logic os_tick;
+	logic rx_falling_edge;
+	
 	//synchronizer
 	always_ff @(posedge clk) begin
-	if(!rst_n) 
+	if(!rst_n) begin
 		rx_FF_1 <= 1'b1;
 		rx_FF_2 <= 1'b1;
-	end else begin
+	end 
+	else begin
 		rx_FF_1	<= rx;
 		rx_FF_2  <= rx_FF_1;
 	end	
@@ -38,12 +41,12 @@ end
 	always_ff @(posedge clk) begin
 	if(!rst_n)
 		tick_counter <= 0;
-	else if(tick_counter == OS_DIVSIOR -1)
+	else if(tick_counter == OS_DIVISOR -1)
 		tick_counter <= 0;
 	else
 		tick_counter <= tick_counter +1;
-		
-	assign os_tick = (tick_counter == OS_DIVSIOR -1);
+	end
+	assign os_tick = (tick_counter == OS_DIVISOR -1);
 
 	always_ff @(posedge clk) begin
 	if(!rst_n) 
@@ -93,5 +96,30 @@ end
 	
 	//data capture
 	always_ff @(posedge clk) begin
-	if(!rst_n) 
-		
+	if(!rst_n)
+		data_register <= 8'b0;
+	else if (os_count == 15 && os_tick && state == DATA_BITS)
+		data_register[bit_idx] <= rx_FF_2;
+	end
+	
+	//rx_busy
+	assign rx_busy = (state != IDLE);
+	
+	//rx_valid
+	always_ff @(posedge clk) begin
+	if (!rst_n)
+		rx_valid <= 1'b0;
+	else
+		rx_valid <= (state == STOP_BIT && state_next == IDLE);
+	end
+	
+	//rx_data decides to use seuqential logic instead of combinational because it allows
+	// clean read instead of reading garbage midway through
+	always_ff @(posedge clk) begin
+	if(!rst_n)
+		rx_data <= 0;
+	else if (state == STOP_BIT && state_next == IDLE)
+		rx_data <= data_register;
+	end
+endmodule
+	
