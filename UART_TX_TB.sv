@@ -8,7 +8,7 @@ module tb_uart_tx;
 
     // ---- JOB 1: Simulation parameters ----
     localparam int CLK_FREQ_HZ    = 1_000_000;   // 1 MHz sim clock
-    localparam int BAUD_RATE      = 10_000;      // -> 100 cycles per bit
+    localparam int BAUD_RATE      = 6250;      // -> 100 cycles per bit
     localparam int CYCLES_PER_BIT = CLK_FREQ_HZ / BAUD_RATE;
     localparam int CLK_PERIOD_NS  = 1000;        // 1 MHz -> 1000 ns period
 
