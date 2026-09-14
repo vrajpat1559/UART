@@ -51,10 +51,10 @@ module tb_uart_tx;
         @(posedge clk);
         while (tx_busy) @(posedge clk);
 
-        tx_data  = data;
-        tx_start = 1'b1;
+        tx_data  <= data;
+        tx_start <= 1'b1;
         @(posedge clk);
-        tx_start = 1'b0;
+        tx_start <= 1'b0;
 
         // check START bit (should be 0), sampled at its center
         repeat (CYCLES_PER_BIT/2) @(posedge clk);
