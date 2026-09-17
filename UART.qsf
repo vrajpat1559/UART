@@ -38,7 +38,7 @@
 
 
 set_global_assignment -name FAMILY "Cyclone 10 LP"
-set_global_assignment -name DEVICE Auto
+set_global_assignment -name DEVICE 10CL016YE144C8G
 set_global_assignment -name TOP_LEVEL_ENTITY uart_tx
 set_global_assignment -name ORIGINAL_QUARTUS_VERSION 25.1STD.0
 set_global_assignment -name PROJECT_CREATION_TIME_DATE "00:30:55  AUGUST 21, 2026"
